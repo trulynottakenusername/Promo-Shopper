@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 streamlit
+=======
+streamlit
+import requests
+from streamlit_modal import Modal
+>>>>>>> 712b57f (Initial commit)
