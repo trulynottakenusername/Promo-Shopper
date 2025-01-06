@@ -1,4 +1,4 @@
 streamlit
-import requests
-from streamlit_modal import Modal
-import streamlit_shadcn_ui
+requests
+streamlit_modal
+streamlit_shadcn_ui
