@@ -87,7 +87,7 @@ if len(st.session_state.products) > 1 or st.session_state.products[0]:
 =======
 # Pole komunikatów
 if st.session_state.sending:
-    with st.spinner('Wysyłanie produktów...'):
+    with st.spinner('Ejaj teraz myśli...'):
         time.sleep(1)  # Symulacja opóźnienia
         products = [p for p in st.session_state.products if p]
         response = requests.post(webhook, json={"products": products})
