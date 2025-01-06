@@ -1,11 +1,5 @@
-<<<<<<< HEAD
 streamlit
-=======
 streamlit
 import requests
 from streamlit_modal import Modal
-<<<<<<< HEAD
->>>>>>> 712b57f (Initial commit)
-=======
 import streamlit_shadcn_ui
->>>>>>> 870c810 ( Changes to be committed:)
