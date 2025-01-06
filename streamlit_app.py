@@ -1,11 +1,11 @@
 import streamlit as st
-<<<<<<< HEAD
+
 
 st.title("🎈 My new app")
 st.write(
     "Let's start building! For help and inspiration, head over to [docs.streamlit.io](https://docs.streamlit.io/)."
 )
-=======
+
 import requests
 import json
 import time
@@ -77,14 +77,14 @@ with col3:
     if len(st.session_state.products) > 1:
         st.button("Wyczyść", on_click=clear_products)
 
-<<<<<<< HEAD
+
 # Wyświetl nagłówek "Lista produktów" tylko, jeśli jest więcej niż jedno pole
 if len(st.session_state.products) > 1 or st.session_state.products[0]:
     st.write("Lista produktów:")
     for product in st.session_state.products:
         st.write(product)
->>>>>>> 712b57f (Initial commit)
-=======
+
+
 # Pole komunikatów
 if st.session_state.sending:
     with st.spinner('Ejaj teraz myśli...'):
@@ -100,4 +100,4 @@ if st.session_state.sending:
 if st.session_state.message:
     st.info(st.session_state.message)
     st.session_state.message = ""
->>>>>>> 870c810 ( Changes to be committed:)
+
