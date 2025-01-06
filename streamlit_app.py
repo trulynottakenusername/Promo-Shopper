@@ -7,76 +7,97 @@ st.write(
 )
 =======
 import requests
-from streamlit_modal import Modal
+import json
+import time
 
-st.title("Witaj, Przemek!")
-st.write("To jest twój pierwszy Streamlit web app!")
+st.set_page_config(layout="wide")
+
+# Dodajemy niestandardowy CSS
+st.markdown("""
+<style>
+.stButton>button {
+    height: 3rem;
+    margin-top: 1.5rem;
+}
+</style>
+""", unsafe_allow_html=True)
+
+st.title("Lista produktów")
 
 # Sidebar
-st.sidebar.header("Ustawienia")
-webhook_url = st.sidebar.text_input("Adres webhook:", "https://your-webhook-url.com")  
-
-if st.sidebar.button("Zapisz"):
-    st.session_state.webhook_url = webhook_url
+webhook = st.sidebar.text_input("Wprowadź webhook:")
+if st.sidebar.button("Zapisz webhook"):
     st.sidebar.success("Webhook zapisany!")
 
-# Inicjalizacja stanu produktów
+# Inicjalizacja stanu
 if 'products' not in st.session_state:
-    st.session_state.products = [""]  
+    st.session_state.products = [""]
+if 'message' not in st.session_state:
+    st.session_state.message = ""
+if 'sending' not in st.session_state:
+    st.session_state.sending = False
 
+# Funkcje
 def add_product():
-    st.session_state.products.append("")  
-    st.rerun()  
+    if st.session_state.products[-1]:
+        st.session_state.products.append("")
+    else:
+        st.session_state.message = "Wypełnij poprzednie pole!"
+
+def remove_product(index):
+    st.session_state.products.pop(index)
+
+def send_products():
+    if not webhook:
+        st.session_state.message = "Wprowadź webhook w sidebarze!"
+        return
+    if not any(st.session_state.products):
+        st.session_state.message = "Lista produktów jest pusta!"
+        return
+    st.session_state.sending = True
 
 def clear_products():
-    st.session_state.products = [""]  
-    st.rerun()  
+    st.session_state.products = [""]
 
-def remove_product(i):
-    del st.session_state.products[i]  
-    st.rerun()  
-
-# Wyświetl wszystkie pola do wpisywania produktów
-for i in range(len(st.session_state.products)):
-    col1, col2 = st.columns((4, 1), vertical_alignment="bottom")
+# Interfejs
+for i, product in enumerate(st.session_state.products):
+    col1, col2 = st.columns([5,1])
     with col1:
-        product_name = st.text_input(f"Podaj nazwę produktu {i+1}:", value=st.session_state.products[i])
-        st.session_state.products[i] = product_name
+        st.session_state.products[i] = st.text_input(f"Produkt {i+1}", value=product, key=f"product_{i}")
     with col2:
-        if product_name:
-            if st.button("X", key=f"remove_{i}"):
-                remove_product(i)
+        if i > 0 or len(st.session_state.products) > 1:
+            st.button("X", key=f"remove_{i}", on_click=remove_product, args=(i,))
 
 col1, col2, col3 = st.columns(3)
 with col1:
-    if st.button("+ Dodaj kolejny produkt"):
-        if all(product.strip() for product in st.session_state.products):
-            add_product()
-        else:
-            st.modal("Proszę wypełnić wszystkie pola produktów.")
+    st.button("Dodaj kolejny produkt", on_click=add_product)
 with col2:
-    if st.button("Wyślij"):
-        if all(product.strip() for product in st.session_state.products):
-            webhook_url = st.session_state.get('webhook_url', "https://your-webhook-url.com")  
-            data = {"products": st.session_state.products}
-            response = requests.post(webhook_url, json=data)
-            if response.status_code == 200:
-                st.success("Wysłano pomyślnie!")
-                st.text_input("Odpowiedź z webhook:", value=response.text, disabled=True)
-            else:
-                st.error("Błąd przy wysyłaniu danych.")
-        else:
-            st.modal("Proszę wypełnić wszystkie pola produktów.")
+    st.button("Wyślij", on_click=send_products)
 with col3:
-    if any(st.session_state.products):
-        if st.button("Wyczyść"):
-            clear_products()
-    else:
-        st.write("")  # pusty kontener, aby utrzymać kolumnę
+    if len(st.session_state.products) > 1:
+        st.button("Wyczyść", on_click=clear_products)
 
+<<<<<<< HEAD
 # Wyświetl nagłówek "Lista produktów" tylko, jeśli jest więcej niż jedno pole
 if len(st.session_state.products) > 1 or st.session_state.products[0]:
     st.write("Lista produktów:")
     for product in st.session_state.products:
         st.write(product)
 >>>>>>> 712b57f (Initial commit)
+=======
+# Pole komunikatów
+if st.session_state.sending:
+    with st.spinner('Wysyłanie produktów...'):
+        time.sleep(1)  # Symulacja opóźnienia
+        products = [p for p in st.session_state.products if p]
+        response = requests.post(webhook, json={"products": products})
+        if response.status_code == 200:
+            st.session_state.message = f"{response.text}"
+        else:
+            st.session_state.message = f"Błąd podczas wysyłania produktów. Kod: {response.status_code}"
+        st.session_state.sending = False
+
+if st.session_state.message:
+    st.info(st.session_state.message)
+    st.session_state.message = ""
+>>>>>>> 870c810 ( Changes to be committed:)
