@@ -1,5 +1,4 @@
 streamlit
-streamlit
 import requests
 from streamlit_modal import Modal
 import streamlit_shadcn_ui
